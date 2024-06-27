@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Dashboard{% endblock title %}
+{% block content %}
+
+    <section id="contentSection">
+    {#{% if request.user.is_staff %}#}
+    <h1 class="text-2xl">{% translate "All news" %}</h1>
+    <div class="mt-6 mb-12 grid text-sm grid-cols-4 gap-8">
+        {% for n in news %}
+            <div class="flex p-4 rounded border flex-col justify-between">
+                <a href="{{ n.get_absolute_url }}">
+                    <img class="h-48 w-full object-fit rounded" src="{{ n.image.url }}" alt="news"/>
+                    <p class="mt-2">{{ n.title|truncatewords:10 }}</p>
+                </a>
+                <div class="mt-4 flex flex-col space-y-2">
+                    <a class="text-center bg-blue-100 border rounded px-3 py-2 text-blue-500"
+                       href="{% url 'update_news_page' n.slug %}">{% translate "Update news" %}</a>
+                    <a class="text-center bg-red-100 rounded px-3 py-2 text-red-500"
+                       href="{% url 'delete_news_page' n.slug %}">{% translate "Delete news" %}</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        <a class="flex bg-gray-50 justify-center items-center text-gray-500 p-4 rounded border text-xl" href="{% url "create_news_page" %}">
+            <span>{% translate "Add news" %}</span>
+        </a>
+    </div>
+    {#{% else %}#}
+    {#<p>Page not found</p>#}
+    {#{% endif %}#}
+{% endblock content %}
+</section>

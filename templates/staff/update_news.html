@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Update News{% endblock title %}
+
+{% block content %}
+    <section style="padding-bottom: 32px" id="contentSection">
+        <h1 class="text-2xl">Update news</h1>
+        <form class="mt-4 grid grid-cols-3 gap-4" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div class="flex flex-col space-y-2">
+                <label for="id_title_uz">{% translate "Title [uz]" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="text" name="title_uz"
+                       value="{{ form.title_uz.value }}" maxlength="250"
+                       id="id_title_uz">
+            </div>
+            <div class="flex flex-col space-y-2">
+                <label for="id_title_ru">{% translate "Title [ru]" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="text" name="title_ru"
+                       value="{{ form.title_ru.value }}"
+                       maxlength="250" id="id_title_ru">
+            </div>
+            <div class="flex flex-col space-y-2">
+                <label for="id_title_en">{% translate "Title [en]" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="text" name="title_en"
+                       value="s{{ form.title_en.value }}" maxlength="250" id="id_title_en">
+            </div>
+            <div class="flex flex-col space-y-2">
+                <label for="id_body_uz">{% translate "Body [uz]" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="text" name="body_uz"
+                       value="{{ form.body_uz.value }}"
+                       maxlength="250" id="id_body_uz">
+            </div>
+            <div class="flex flex-col space-y-2">
+                <label for="id_body_ru">{% translate "Body [ru]" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="text" name="body_ru"
+                       value="{{ form.body_ru.value }}"
+                       maxlength="250" id="id_body_ru">
+            </div>
+            <div class="flex flex-col space-y-2">
+
+                <label for="id_body_en">{% translate "Body [en]" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="text" name="body_en"
+                       value="{{ form.body_en.value }}"
+                       maxlength="250" id="id_body_en">
+            </div>
+            <div class="flex flex-col space-y-2"><label for="id_image">{% translate "Image" %}</label>
+                <input required class="border focus:border-[#d083cf] outline-none p-2 rounded" type="file" name="image" accept="image/*"
+                       value="{{ form.image.value.url }}" id="id_image"></div>
+            <div class="flex flex-col space-y-2">
+                <label for="id_category">{% translate "Category" %}</label>
+                <select class="border focus:border-[#d083cf] outline-none p-2 rounded" name="category" required="" id="id_category">
+                    <option value="">---------</option>
+                    <option value="1">{% translate "politics" %}</option>
+                    <option value="3">{% translate "business" %}</option>
+                    <option value="4">{% translate "technology" %}</option>
+                    <option value="5">{% translate "sport" %}</option>
+                    <option value="6">{% translate "tourism" %}</option>
+                </select>
+            </div>
+            <div class="flex flex-col space-y-2">
+                <label for="id_status">{% translate "Status" %}</label>
+                <select required class="border focus:border-[#d083cf] outline-none p-2 rounded" name="status" id="id_status">
+                    <option value="DF" selected>{% translate "Draft" %}</option>
+                    <option value="Pb">{% translate "Published" %}</option>
+                </select>
+            </div>
+
+         <div class="col-span-3 flex space-x-2 justify-end">
+                <a class="cursor-pointer px-6 mt-2 py-2 bg-gray-100 text-gray-500 rounded" href="{% url 'dashboard_page' %}">{% translate "Cancel" %}</a>
+                <button class="px-6 mt-2 text-white py-2 bg-[#d083cf] rounded" type="submit">{% translate "Submit" %}</button>
+            </div>
+        </form>
+    </section>
+{% endblock content %}

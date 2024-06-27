@@ -1,0 +1,218 @@
+{% load static %}
+{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock title %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {#    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">#}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/li-scroller.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/theme.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div id="preloader">
+    <div id="status">&nbsp;</div>
+</div>
+<a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
+<div class="max-w-7xl mx-auto">
+    <header id="header">
+        <div>
+            <div>
+                <div class="header_bottom flex justify-between items-center pt-12">
+                    <div class="logo_area">
+                        <a href="{% url 'landing_page' %}" class="logo">
+                            <img src="{% static 'images/logo.jpg' %}" alt="logo">
+                        </a>
+                    </div>
+                    <form id="lang_form" class="hidden" action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}">
+                        <select id="lang_selector" name="language">
+                            {% for language in languages %}
+                                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %}
+                                        selected{% endif %}>
+                                    {{ language.name_local }} ({{ language.code }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Change</button>
+                    </form>
+                    <div>
+                        {% for language in languages %}
+                            <button class="uppercase font-semibold {% if language.code == LANGUAGE_CODE %}text-[#d083cf] select-none underline pointer-events-none{% endif %}"
+                                    id="lang_btn">{{ language.code }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="navArea">
+        <nav class="navbar py-2 navbar-inverse bg-[#252525]" role="navigation">
+            <div id="navbar" class="flex justify-between items-center">
+                <ul class="nav navbar-nav main_nav flex items-center">
+                    <li>
+                        <a class="hover:!text-[#d083cf] hover:!bg-transparent  {% if request.path == "/"|add:LANGUAGE_CODE|add:"/" %}!text-[#d083cf]{% endif %}"
+                           href="{% url 'landing_page' %}"><span
+                                class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
+                        {% for c in category_list %}
+                            <li>
+                                <a class="hover:!text-[#d083cf] hover:!bg-transparent {% if request.path == c.get_absolute_url %}!text-[#d083cf]{% endif %}"
+                                   href="{{ c.get_absolute_url }}">{{ c.value }}</a>
+                            </li>
+                        {% endfor %}
+                    <li>
+                        <a class="hover:!text-[#d083cf] hover:!bg-transparent  {% if request.path == "/"|add:LANGUAGE_CODE|add:"/contact/" %}!text-[#d083cf]{% endif %}"
+                           href="{% url "contact_page" %}">{% translate "Contact" %}</a>
+                    </li>
+                </ul>
+                <form method="get" action="{% url 'search_page' %}">
+                    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">{% translate "Search" %}</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input type="text" id="default-search"
+                               name="q"
+                               class="block outline-none w-64 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-[#d083cf] focus:border-[#d083cf] dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#d083cf] dark:focus:border-[#d083cf]"
+                               placeholder="{% translate "Search" %} ..." required/>
+                       <div class="absolute inset-y-0 flex justify-center items-center right-1.5">
+                            <button type="submit"
+                                class="text-white bg-[#d083cf] hover:bg-[#d083cf]/80 focus:outline-none font-medium rounded-lg text-xs px-3 py-1.5 dark:bg-[#d083cf] dark:hover:bg-[#d083cf]">
+                            {% translate "Search" %}
+                        </button>
+                       </div>
+                    </div>
+                </form>
+                {% if request.user.is_authenticated %}
+                    <div class="mr-4 flex items-center relative">
+                        {% if request.user.profile.photo %}
+                            <button class="user_dropdown_btn">
+                                <img class="rounded-full h-8 w-8 object-fit" src="{{ request.user.profile.photo.url }}"
+                                     alt="user"/>
+                            </button>
+                        {% else %}
+                            <button class="user_dropdown_btn flex justify-center pb-1 items-center rounded-full inline-block h-8 w-8 bg-indigo-500">
+                                <span class="text-white">{{ request.user.username|slice:":1" }}</span>
+                            </button>
+                        {% endif %}
+                        <ul class="user_dropdown hidden top-full right-0 mt-2 min-w-[200px] absolute bg-white border px-4 pb-4 pt-2 flex flex-col rounded z-50">
+                            <p class="pb-1 text-right text-sm text-indigo-500">{{ request.user.username }}</p>
+                            <a class="py-1 border-b" href="{% url "profile_page" %}">{% translate "Profile" %}</a>
+                            {% if request.user.is_staff or request.user.is_superuser %}
+                                <a class="py-1 border-b" href="{% url "dashboard_page" %}">{% translate "Manage news" %}</a>
+                            {% endif %}
+                            <a class="py-1 border-b" href="{% url "password_change" %}">{% translate "Change Password" %}</a>
+                            <form method="post" action="{% url "logout_page" %}">{% csrf_token %}
+                                <button class="py-1 text-red-500" type="submit">{% translate "Logout" %}</button>
+                            </form>
+                        </ul>
+                        <div class="hidden user_dropdown_close fixed inset-0 z-40"></div>
+                    </div>
+                {% else %}
+                   <div class="text-sm">
+                    <a class="text-[#d083cf] hover:text-[#d083cf]/80 mr-3 underline hover:underline"
+                       href="{% url "register_page" %}">{% translate 'Sign up' %}</a><a class="bg-[#d083cf] hover:bg-[#d083cf]/80 text-white hover:text-white rounded-full py-2 px-6 mr-4"
+                       href="{% url "login_page" %}">{% translate 'Sign in' %}</a>
+                   </div>
+                {% endif %}
+            </div>
+        </nav>
+    </section>
+    <section id="newsSection">
+        <div class="latest_newsarea mt-[20px]">
+            <span>{% translate "Latest news" %}</span>
+            <ul id="ticker01" class="news_sticker">
+                {% for ln in latest_news %}
+                    <li>
+                        <a href="{{ ln.get_absolute_url }}">{{ ln.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="social_area">
+                <ul class="social_nav">
+                    <li class="facebook">
+                        <a href="#"></a>
+                    </li>
+                    <li class="twitter">
+                        <a href="#"></a>
+                    </li>
+                    <li class="flickr">
+                        <a href="#"></a>
+                    </li>
+                    <li class="pinterest">
+                        <a href="#"></a>
+                    </li>
+                    <li class="googleplus">
+                        <a href="#"></a>
+                    </li>
+                    <li class="vimeo">
+                        <a href="#"></a>
+                    </li>
+                    <li class="youtube">
+                        <a href="#"></a>
+                    </li>
+                    <li class="mail">
+                        <a href="#"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    {% block content %}
+    {% endblock content %}
+    <footer id="footer">
+        <div class="footer_top grid grid-cols-2 gap-12 pt-8">
+            <div class="footer_widget wow fadeInDown">
+                <h2>{% translate "Links" %}</h2>
+                <ul class="tag_nav">
+                    {% for c in category_list %}
+                        <li><a class="capitalize" href={{ c.get_absolute_url }}>{{ c.value }}</a></li>
+                    {% endfor %}
+                 <li><a href="{% url "contact_page" %}">{% translate "Contact" %}</a></li>
+                </ul>
+            </div>
+            <div class="footer_widget wow fadeInRightBig">
+                <h2>{% translate "Contact" %}</h2>
+                <p class="mt-2 mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                    incididunt ut
+                    labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                <address>
+                    Perfect News,1238 S . 123 St.Suite 25 Town City 3333,USA Phone: 123-326-789 Fax: 123-546-567
+                </address>
+            </div>
+        </div>
+    </footer>
+</div>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/wow.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/slick.min.js' %}"></script>
+<script src="{% static 'js/jquery.li-scroller.1.0.js' %}"></script>
+<script src="{% static 'js/jquery.newsTicker.min.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox.pack.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+<script src="{% static 'js/html5shiv.min.js' %}"></script>
+<script src="{% static 'js/respond.min.js' %}"></script>
+<script src="https://kit.fontawesome.com/a945e037c4.js" crossorigin="anonymous"></script>
+</body>
+</html>

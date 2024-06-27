@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}Detail{% endblock title %}
+{% block content %}
+    <section id="contentSection">
+        <div>
+            <div>
+                <img style="width: 100%; height: 500px; object-fit: cover" src="{{ news.image.url }}" alt="news"/>
+                <h1 class="text-2xl mt-6 mb-4">{{ news.title }}</h1>
+                <p>{{ news.subtitle }}</p>
+                <p>{{ news.body }}</p>
+            </div>
+            <div class="my-8">
+                <h1 class="text-xl">{% translate 'Comments' %} {{ comments.count }}:</h1>
+                <div class="mt-4 rounded p-8 bg-gray-50 space-y-4">
+                    {% if comments|length == 0 %}
+                        <p class="italic text-gray-400">{% translate 'No comments yet' %}</p>
+                    {% endif %}
+                    {% for comment in comments %}
+                        <div class="bg-white border text-sm rounded-r-lg rounded-bl-lg py-2 px-4">
+                            <p class="text-[#d083cf]">
+                                <span>{{ comment.user }}</span>
+                                <span>{{ comment.created_time }}</span>
+                            </p>
+                            <p>{{ comment.body }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <form class="mt-4" method="post">{% csrf_token %}
+                    <label for="id_body">{% translate 'Leave comment:' %}</label>
+                    <textarea class="p-2 rounded mt-2 border w-full outline-none focus:border-[#d083cf]" name="body"
+                              rows=5" required="" id="id_body"></textarea>
+                    <div class="flex justify-end mt-4">
+                        <button class="bg-[#d083cf] text-white px-6 py-2 rounded" type="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}

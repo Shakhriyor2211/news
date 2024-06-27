@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}Profile{% endblock title %}
+{% block content %}
+    <section style="padding-bottom: 24px" id="contentSection">
+
+
+        <div class="h-full rounded shadow-md p-8">
+            <h1 class="text-2xl">{% translate "Profile" %}</h1>
+            <form id="profile_form" method="post" enctype="multipart/form-data">{% csrf_token %}
+                <div class="block md:flex mt-4">
+                    <div class="w-full md:w-2/5 p-4 sm:p-6 lg:p-8 bg-white">
+                        <div class="w-full p-8 mx-2 flex flex-col items-center">
+                            <div class="relative">
+                               <div class="border rounded-full overflow-hidden">
+                                    {% if request.user.profile.photo %}
+                                    <img id="showImage" class="w-48 h-48"
+                                         src="{{ request.user.profile.photo.url }}"
+                                         alt="">
+
+                                {% else %}
+                                    <div class="bg-gray-200 w-48 h-48 p-4 flex justify-center items-center">
+                                        <svg class="fill-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 101 101" id="user">
+                                            <path d="M50.4 54.5c10.1 0 18.2-8.2 18.2-18.2S60.5 18 50.4 18s-18.2 8.2-18.2 18.2 8.1 18.3 18.2 18.3zm0-31.7c7.4 0 13.4 6 13.4 13.4s-6 13.4-13.4 13.4S37 43.7 37 36.3s6-13.5 13.4-13.5zM18.8 83h63.4c1.3 0 2.4-1.1 2.4-2.4 0-12.6-10.3-22.9-22.9-22.9H39.3c-12.6 0-22.9 10.3-22.9 22.9 0 1.3 1.1 2.4 2.4 2.4zm20.5-20.5h22.4c9.2 0 16.7 6.8 17.9 15.7H21.4c1.2-8.9 8.7-15.7 17.9-15.7z"/>
+                                        </svg>
+                                    </div>
+                                {% endif %}
+                               </div>
+                                <label for="id_photo" id="profile_file"
+                                       class="absolute hidden cursor-pointer bottom-0 right-0">
+                                    <svg class="w-5 h-5 fill-[#d083cf]" xmlns="http://www.w3.org/2000/svg"
+                                         viewBox="0 0 512 512">
+                                        <path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/>
+                                    </svg>
+
+                                </label>
+
+                                <input class="hidden" type="file" name="photo" accept="image/*"
+                                       id="id_photo">
+                            </div>
+
+                           <div id="uploaded_file" class="hidden space-x-4 items-center mt-4">
+                               <span></span>
+                                <div class="cursor-pointer">
+                                <svg class="w-5 h-5 fill-red-500" xmlns="http://www.w3.org/2000/svg"
+                                     viewBox="0 0 384 512">
+                                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                                </svg>
+                            </div>
+                           </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-3/5 bg-white lg:ml-4">
+                        <div class="">
+                            <div class="pb-6">
+                                <label for="id_first_name" class="font-semibold text-gray-700 block pb-1">{% translate "First name" %}</label>
+                                <div class="flex">
+                                    <input disabled name="first_name" maxlength="150" id="id_first_name"
+                                           class="outline-none p-3 border-b disabled:border-none disabled:rounded focus:border-[#d083cf] w-full"
+                                           type="text"
+                                           value="{{ request.user.first_name }}"/>
+                                </div>
+                            </div>
+                            <div class="pb-6">
+                                <label for="id_last_name" class="font-semibold text-gray-700 block pb-1">{% translate "Last name" %}</label>
+                                <div class="flex">
+                                    <input disabled name="last_name" maxlength="150" id="id_last_name"
+                                           class="outline-none p-3 border-b disabled:border-none disabled:rounded focus:border-[#d083cf] w-full"
+                                           type="text"
+                                           value="{{ request.user.last_name }}"/>
+                                </div>
+                            </div>
+                            <div class="pb-4">
+                                <label for="id_email" class="font-semibold text-gray-700 block pb-1">{% translate "Email" %}</label>
+                                <input disabled name="email" maxlength="254" id="id_email"
+                                       class="outline-none p-3 border-b disabled:border-none disabled:rounded focus:border-[#d083cf] w-full"
+                                       type="email"
+                                       value="{{ request.user.email }}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="flex justify-end mt-4 space-x-2">
+                    <button name="edit"
+                            class="text-md font-bold text-white bg-gray-500 rounded-full px-5 py-2 hover:bg-gray-800">
+                        {% translate "Edit" %}
+                    </button>
+                    <button name="cancel"
+                            class="hidden text-md font-bold text-white bg-red-700 rounded-full px-5 py-2 hover:bg-red-600">
+                       {% translate "Cancel" %}
+                    </button>
+                    <button type="submit" name="submit_btn"
+                            class="hidden text-md font-bold text-white bg-[#d083cf]/90 rounded-full px-5 py-2 hover:bg-[#d083cf]">
+                    {% translate "Save" %}
+                    </button>
+
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+    <section style="padding-bottom: 32px" id="contentSection">
+        {#    <form method="post">{% csrf_token %}#}
+        {#        {{ form.as_p }}#}
+        {#        <button  type="submit">Submit</button>#}
+        {#    </form>#}
+        <section class="p-4 h-[600px] flex justify-center items-center">
+
+            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-[#d083cf] md:text-2xl dark:text-white">
+                        {% translate "Sign in to your account" %}
+                    </h1>
+                    <form class="space-y-4 md:space-y-6" method="post">{% csrf_token %}
+                        <div>
+                            <label for="id_username"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{% translate "Your username" %}</label>
+                            <input type="text" name="username" id="id_username"
+                                   class="bg-gray-50 border outline-none border-gray-300 text-gray-900 rounded-lg focus:border-[#d083cf] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                   required="">
+                        </div>
+                        <div>
+                            <label for="id_password"
+                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{% translate "Password" %}</label>
+                            <input type="password" name="password" id="id_password"
+                                   class="bg-gray-50 border outline-none border-gray-300 text-gray-900 rounded-lg focus:border-[#d083cf] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                   required="">
+                        </div>
+                        <div class="flex items-center justify-end">
+                            <a href="{% url "password_reset" %}"
+                               class="text-sm font-medium text-blue-400">{% translate "Forgot password?" %}</a>
+                        </div>
+                        <button type="submit"
+                                class="w-full text-white bg-[#d083cf] focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                            {% translate "Sign in" %}
+                        </button>
+                        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                            {% translate "Don’t have an account yet?" %} <a href="{% url "register_page" %}" class="font-medium text-blue-400">{% translate "Sign up" %}</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </section>
+{% endblock content %}
